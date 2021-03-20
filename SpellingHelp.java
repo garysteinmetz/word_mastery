@@ -86,7 +86,14 @@ public class SpellingHelp {
         String[] thingsToSay = new String[]{inWord.word, inWord.definition, inWord.example};
         for (String nextThing : thingsToSay) {
             if (nextThing != null) {
-                Process p1 = r.exec("say " + nextThing);
+                Process p1;
+                if (System.getProperty("os.name").toLowerCase().contains("win")) {
+                    //p1 = r.exec("PowerShell -Command \"Add-Type –AssemblyName System.Speech; (New-Object System.Speech.Synthesis.SpeechSynthesizer).Speak('hello');\"");
+                    //p1 = r.exec("mshta vbscript:Execute(\"CreateObject(\"\"SAPI.SpVoice\"\").Speak(\"\"Hello\"\")(window.close)\")");
+                    p1 = r.exec("mshta vbscript:Execute(\"CreateObject(\"\"SAPI.SpVoice\"\").Speak(\"\"" + nextThing + "\"\")(window.close)\")");
+                } else {
+                    p1 = r.exec("say " + nextThing);
+                }
                 p1.waitFor();
                 p1.destroy();
             }
